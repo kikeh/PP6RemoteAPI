@@ -37,3 +37,20 @@ class Clock:
         self.time = time or self.DEFAULT_TIME
         self.clock_type = clock_type or self.COUNTDOWN_TIMER
         self.display_type = display_type or self.IS_24H
+        self.is_overrun = is_overrun
+        self.duration = duration or self.DEFAULT_TIME
+        self.end_time = end_time or self.DEFAULT_TIME
+        self.state = state
+
+    def export_settings(self):
+        return {
+            'clockIndex': self.index,
+            'clockTime': self.time,
+            'clockName': self.name,
+            'clockType': self.clock_type,
+            'clockIsPM': self.display_type,
+            'clockOverrun': self.is_overrun,
+        }
+
+    def __repr__(self):
+        return f'<Clock: {self.name} | {self.index}>'
