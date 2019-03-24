@@ -9,7 +9,7 @@ class Clock:
     COUNTDOWN_TO_TIME = 1
     ELAPSED_TIME = 2
 
-    def __init__(self, index, clock_info):
+    def __init__(self, index, clock_info, client=None):
         self.index = index
         self._initialize_with_clock_info(
             name=clock_info.get('clockName'),
@@ -21,6 +21,7 @@ class Clock:
             end_time=clock_info.get('clockEndTime'),
             state=clock_info.get('clockState'),
         )
+        self.client = client
 
     def _initialize_with_clock_info(
             self,
@@ -42,7 +43,8 @@ class Clock:
         self.end_time = end_time or self.DEFAULT_TIME
         self.state = state
 
-    def export_settings(self):
+    @property
+    def settings(self):
         return {
             'clockIndex': self.index,
             'clockTime': self.time,
@@ -51,6 +53,42 @@ class Clock:
             'clockIsPM': self.display_type,
             'clockOverrun': self.is_overrun,
         }
+
+    def update(self, new_settings):
+        if self.client:
+            command = {'action': 'clockUpdate'}
+            settings = self.settings
+            settings.update(new_settings)
+            command.update(settings)
+            return self.client.async_send(command, expect_response=False)
+
+    def set_time(self, time):
+        if self.client:
+            return self.update({'clockTime': time})
+
+    def start(self):
+        if self.client:
+            command = {
+                'action': 'clockStart',
+                'clockIndex': self.index,
+            }
+            return self.client.async_send(command, expect_response=False)
+
+    def stop(self):
+        if self.client:
+            command = {
+                'action': 'clockStop',
+                'clockIndex': self.index,
+            }
+            return self.client.async_send(command, expect_response=False)
+
+    def reset(self):
+        if self.client:
+            command = {
+                'action': 'clockReset',
+                'clockIndex': self.index,
+            }
+            return self.client.async_send(command, expect_response=False)
 
     def __repr__(self):
         return f'<Clock: {self.name} | {self.index}>'
