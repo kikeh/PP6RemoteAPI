@@ -11,24 +11,12 @@ from .exceptions import AuthenticationError
 
 
 class PP6RemoteAPIClient:
+    AUTHENTICATION_PROTOCOL = '600'
 
     def __init__(self, host, port, password, ws_settings=None):
         self.PROPRESENTER_URL = f'ws://{host}:{port}/remote'
         self._password = password
         self.ws_settings = ws_settings or {}
-
-    def async_send(self, command, expect_response=True):
-        return asyncio.run(self.send(command, expect_response))
-
-    async def send(self, command, expect_response=True):
-        command = json.dumps(command)
-
-        async with websockets.connect(
-                self.PROPRESENTER_URL, **self.ws_settings) as websocket:
-            await websocket.send(command)
-            if expect_response:
-                response = await websocket.recv()
-                return json.loads(response)
 
     def authenticate(self):
         '''
@@ -37,7 +25,7 @@ class PP6RemoteAPIClient:
         '''
         command = {
             'action': 'authenticate',
-            'protocol': '600',
+            'protocol': self.AUTHENTICATION_PROTOCOL,
             'password': self._password,
         }
 
@@ -47,6 +35,19 @@ class PP6RemoteAPIClient:
             raise AuthenticationError(response.get('error'))
 
         return response
+
+    def async_send(self, command, expect_response=True):
+        return asyncio.run(self.send(command, expect_response))
+
+    async def send(self, command, expect_response=True):
+        command = json.dumps(command)
+
+        async with websockets.connect(self.PROPRESENTER_URL,
+                                      **self.ws_settings) as websocket:
+            await websocket.send(command)
+            if expect_response:
+                response = await websocket.recv()
+                return json.loads(response)
 
     def current_presentation(self, quality=Presentation.DEFAULT_QUALITY):
         command = {
@@ -82,10 +83,6 @@ class PP6RemoteAPIClient:
     def stage_display_sets(self):
         command = {'action': 'stageDisplaySets'}
         return self.async_send(command)
-
-    def stage_display_sets_names(self):
-        response = self.stage_display_sets()
-        return response.get('stageDisplaySets', [])
 
     def stage_display_set_display(self, name):
         names = self.stage_display_sets_names()
@@ -135,6 +132,10 @@ class PP6RemoteAPIClient:
             Clock(index, _clock, self)
             for index, _clock in enumerate(response.get('clockInfo'))
         ]
+
+    def _stage_display_sets_names(self):
+        response = self.stage_display_sets()
+        return response.get('stageDisplaySets', [])
 
     @property
     def library(self):
