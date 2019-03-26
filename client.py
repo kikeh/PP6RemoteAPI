@@ -57,6 +57,10 @@ class PP6RemoteAPIClient:
         }
         return self.async_send(command)
 
+    def current_song(self):
+        command = {'action': 'audioCurrentSong'}
+        return self.async_send(command)
+
     def clear_all(self):
         command = {'action': 'clearAll'}
         return self.async_send(command, expect_response=False)
@@ -80,6 +84,7 @@ class PP6RemoteAPIClient:
     def clear_to_logo(self):
         command = {'action': 'clearToLogo'}
         return self.async_send(command, expect_response=False)
+        return self.async_send(command)
 
     def stage_display_sets(self):
         command = {'action': 'stageDisplaySets'}
@@ -93,6 +98,10 @@ class PP6RemoteAPIClient:
             'stageDisplayIndex': index,
         }
         return self.async_send(command, expect_response=False)
+
+    def telestrator_settings(self):
+        command = {'action': 'telestratorSettings'}
+        return self.async_send(command)
 
     def get_playlists(self):
         command = {'action': 'playlistRequestAll'}
