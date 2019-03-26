@@ -7,8 +7,9 @@ class Presentation:
     def __init__(self, abs_name, client=None):
         self.abs_name = abs_name
         self.path = os.path.dirname(abs_name)
-        self.name = os.path.basename(abs_name)
-        self.extension = self.name.split('.')[-1]
+        filename = os.path.basename(abs_name)
+        self.name = '.'.join(filename.split('.')[:-1])
+        self.extension = filename.split('.')[-1]
         self.client = client
 
     # Not sure what this request does.
@@ -40,3 +41,6 @@ class Presentation:
     def current_slide(self):
         command = {'action': 'presentationSlideIndex'}
         return self.client.async_send(command, expect_response=False)
+
+    def __repr__(self):
+        return f'<Presentation: {self.name}>'

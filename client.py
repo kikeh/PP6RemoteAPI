@@ -5,6 +5,7 @@ import websockets
 from .clock import Clock
 from .library import Library
 from .message import FrontMessage
+from .playlist import Playlist
 from .presentation import Presentation
 from .stage_display import StageDisplay
 from .exceptions import AuthenticationError
@@ -93,6 +94,24 @@ class PP6RemoteAPIClient:
         }
         return self.async_send(command, expect_response=False)
 
+    def get_playlists(self):
+        command = {'action': 'playlistRequestAll'}
+        response = self.async_send(command)
+
+        return [
+            Playlist(playlist, self)
+            for playlist in response.get('playlistAll')
+        ]
+
+    def get_audio_playlists(self):
+        command = {'action': 'audioRequest'}
+        response = self.async_send(command)
+
+        return [
+            Playlist(playlist, self)
+            for playlist in response.get('audioPlaylist')
+        ]
+
     def get_front_messages(self):
         command = {'action': 'messageRequest'}
         response = self.async_send(command)
@@ -144,6 +163,14 @@ class PP6RemoteAPIClient:
     @property
     def presentation(self):
         return self.get_presentation()
+
+    @property
+    def playlists(self):
+        return self.get_playlists()
+
+    @property
+    def audio_playlists(self):
+        return self.get_audio_playlists()
 
     @property
     def front_messages(self):
