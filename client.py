@@ -3,6 +3,9 @@ import json
 import websockets
 
 from .clock import Clock
+from .library import Library
+from .message import FrontMessage
+from .presentation import Presentation
 from .stage_display import StageDisplay
 from .exceptions import AuthenticationError
 
@@ -15,8 +18,7 @@ class PP6RemoteAPIClient:
         self.ws_settings = ws_settings or {}
 
     def async_send(self, command, expect_response=True):
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(self.send(command, expect_response))
+        return asyncio.run(self.send(command, expect_response))
 
     async def send(self, command, expect_response=True):
         command = json.dumps(command)
@@ -46,6 +48,37 @@ class PP6RemoteAPIClient:
 
         return response
 
+    def current_presentation(self, quality=Presentation.DEFAULT_QUALITY):
+        command = {
+            'action': 'presentationCurrent',
+            'presentationSlideQuality': quality,
+        }
+        return self.async_send(command)
+
+    def clear_all(self):
+        command = {'action': 'clearAll'}
+        return self.async_send(command, expect_response=False)
+
+    def clear_background(self):
+        command = {'action': 'clearVideo'}
+        return self.async_send(command, expect_response=False)
+
+    def clear_audio(self):
+        command = {'action': 'clearAudio'}
+        return self.async_send(command, expect_response=False)
+
+    def clear_text(self):
+        command = {'action': 'clearText'}
+        return self.async_send(command, expect_response=False)
+
+    def clear_props(self):
+        command = {'action': 'clearProps'}
+        return self.async_send(command, expect_response=False)
+
+    def clear_to_logo(self):
+        command = {'action': 'clearToLogo'}
+        return self.async_send(command, expect_response=False)
+
     def stage_display_sets(self):
         command = {'action': 'stageDisplaySets'}
         return self.async_send(command)
@@ -62,6 +95,21 @@ class PP6RemoteAPIClient:
             'stageDisplayIndex': index,
         }
         return self.async_send(command, expect_response=False)
+
+    def get_front_messages(self):
+        command = {'action': 'messageRequest'}
+        response = self.async_send(command)
+
+        return [
+            FrontMessage(index, message, self)
+            for index, message in enumerate(response.get('messages'))
+        ]
+
+    def get_library(self):
+        command = {'action': 'libraryRequest'}
+        response = self.async_send(command)
+
+        return Library(response.get('library'), self)
 
     def get_stage_display_sets(self):
         response = self.stage_display_sets()
@@ -87,6 +135,18 @@ class PP6RemoteAPIClient:
             Clock(index, _clock, self)
             for index, _clock in enumerate(response.get('clockInfo'))
         ]
+
+    @property
+    def library(self):
+        return self.get_library()
+
+    @property
+    def presentation(self):
+        return self.get_presentation()
+
+    @property
+    def front_messages(self):
+        return self.get_front_messages()
 
     @property
     def clocks(self):
