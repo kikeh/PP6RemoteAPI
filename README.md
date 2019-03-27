@@ -1,7 +1,7 @@
 PP6RemoteAPI Client
 ===================
 
-A client for the ProPresenter Remote Websocket API.
+A client for the ProPresenter6 Remote Websocket API.
 
 Getting started
 ---------------
