@@ -9,7 +9,7 @@ from setuptools import find_packages, setup
 
 
 def get_long_description():
-    for filename in ('README.rst',):
+    for filename in ('README.md',):
         with io.open(filename, 'r', encoding='utf-8') as f:
             yield f.read()
 
