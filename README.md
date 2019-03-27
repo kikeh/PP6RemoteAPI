@@ -4,6 +4,7 @@ PP6RemoteAPI Client
 A client for the ProPresenter6 Remote Websocket API.
 
 ## Index
+* [Getting started](#getting-started)
 * [Client](#client)
   * [Functions](#functions)
   * [Properties](#properties)
@@ -17,8 +18,7 @@ A client for the ProPresenter6 Remote Websocket API.
   * [Presentation](#presentation)
   * [StageDisplay](#stagedisplay)
 
-Getting started
----------------
+## Getting started
 ```python
 from PP6RemoteAPI import PP6RemoteAPIClient as PP6
 client = PP6(host='192.168.0.100', port=54321, password='password')
