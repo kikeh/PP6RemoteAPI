@@ -170,10 +170,6 @@ class PP6RemoteAPIClient:
         return self.get_library()
 
     @property
-    def presentation(self):
-        return self.get_presentation()
-
-    @property
     def playlists(self):
         return self.get_playlists()
 
