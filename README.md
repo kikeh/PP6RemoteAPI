@@ -19,6 +19,12 @@ A client for the ProPresenter6 Remote Websocket API.
   * [StageDisplay](#stagedisplay)
 
 ## Getting started
+Install with `pip`:
+```bash
+$ pip install PP6RemoteAPI
+```
+
+Then:
 ```python
 from PP6RemoteAPI import PP6RemoteAPIClient as PP6
 client = PP6(host='192.168.0.100', port=54321, password='password')
