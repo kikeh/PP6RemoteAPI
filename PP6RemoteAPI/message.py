@@ -2,7 +2,7 @@ import re
 
 
 class FrontMessage:
-    VARIABLE = '\$\{(.*)\}'
+    VARIABLE = r'\$\{(.*)\}'
 
     def __init__(self, index, message, client=None):
         self.components = []
