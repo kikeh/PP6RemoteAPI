@@ -173,7 +173,7 @@ class PP6RemoteAPIClient:
     def current_presentation(self):
         return self.current_presentation()
 
-    @propery
+    @property
     def current_audio(self):
         return self.current_audio()
 
