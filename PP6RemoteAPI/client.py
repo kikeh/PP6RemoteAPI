@@ -13,6 +13,7 @@ from .exceptions import AuthenticationError
 
 class PP6RemoteAPIClient:
     AUTHENTICATION_PROTOCOL = '600'
+    DEFAULT_TIMEOUT = 15.0
 
     def __init__(self, host, port, password, ws_settings=None):
         self.PROPRESENTER_URL = f'ws://{host}:{port}/remote'
@@ -38,7 +39,12 @@ class PP6RemoteAPIClient:
         return response
 
     def async_send(self, command, expect_response=True):
-        return asyncio.run(self._send(command, expect_response))
+        return asyncio.run(
+            asyncio.wait_for(
+                self._send(command, expect_response),
+                timeout=self.DEFAULT_TIMEOUT,
+            )
+        )
 
     async def _send(self, command, expect_response=True):
         command = json.dumps(command)
@@ -49,17 +55,6 @@ class PP6RemoteAPIClient:
             if expect_response:
                 response = await websocket.recv()
                 return json.loads(response)
-
-    def current_presentation(self, quality=Presentation.DEFAULT_QUALITY):
-        command = {
-            'action': 'presentationCurrent',
-            'presentationSlideQuality': quality,
-        }
-        return self.async_send(command)
-
-    def current_audio(self):
-        command = {'action': 'audioCurrentSong'}
-        return self.async_send(command)
 
     def clear_all(self):
         command = {'action': 'clearAll'}
@@ -161,6 +156,17 @@ class PP6RemoteAPIClient:
             for index, _clock in enumerate(response.get('clockInfo'))
         ]
 
+    def get_current_presentation(self, quality=Presentation.DEFAULT_QUALITY):
+        command = {
+            'action': 'presentationCurrent',
+            'presentationSlideQuality': quality,
+        }
+        return self.async_send(command)
+
+    def get_current_audio(self):
+        command = {'action': 'audioCurrentSong'}
+        return self.async_send(command)
+
     def _stage_display_sets_names(self):
         response = self.stage_display_sets()
         return response.get('stageDisplaySets', [])
@@ -171,11 +177,11 @@ class PP6RemoteAPIClient:
 
     @property
     def current_presentation(self):
-        return self.current_presentation()
+        return self.get_current_presentation()
 
     @property
     def current_audio(self):
-        return self.current_audio()
+        return self.get_current_audio()
 
     @property
     def playlists(self):
