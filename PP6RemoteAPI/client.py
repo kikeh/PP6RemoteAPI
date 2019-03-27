@@ -38,9 +38,9 @@ class PP6RemoteAPIClient:
         return response
 
     def async_send(self, command, expect_response=True):
-        return asyncio.run(self.send(command, expect_response))
+        return asyncio.run(self._send(command, expect_response))
 
-    async def send(self, command, expect_response=True):
+    async def _send(self, command, expect_response=True):
         command = json.dumps(command)
 
         async with websockets.connect(self.PROPRESENTER_URL,
