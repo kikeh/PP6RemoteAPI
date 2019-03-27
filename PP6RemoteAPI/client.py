@@ -57,7 +57,7 @@ class PP6RemoteAPIClient:
         }
         return self.async_send(command)
 
-    def current_song(self):
+    def current_audio(self):
         command = {'action': 'audioCurrentSong'}
         return self.async_send(command)
 
@@ -168,6 +168,14 @@ class PP6RemoteAPIClient:
     @property
     def library(self):
         return self.get_library()
+
+    @property
+    def current_presentation(self):
+        return self.current_presentation()
+
+    @propery
+    def current_audio(self):
+        return self.current_audio()
 
     @property
     def playlists(self):
