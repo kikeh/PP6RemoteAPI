@@ -86,7 +86,7 @@ class PP6RemoteAPIClient:
         return self.async_send(command)
 
     def stage_display_set_display_by_name(self, name):
-        names = self.stage_display_sets_names()
+        names = self._stage_display_sets_names()
         index = names.index(name)
         return self.stage_display_set_display(index)
 
