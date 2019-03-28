@@ -145,3 +145,5 @@ Returns current slide index
 ### StageDisplay
 #### _send_message(message)_
 Send _message_ to the StageDisplay message panel
+#### _hide_message()_
+Hide message from StageDisplay message panel
