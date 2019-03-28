@@ -14,6 +14,11 @@ class StageDisplay:
             }
             return self.client.async_send(command, expect_response=False)
 
+    def hide_message(self):
+        if self.client:
+            command = {'action': 'stageDisplayHideMessage'}
+            return self.client.async_send(command, expect_response=False)
+
     def __repr__(self):
         current = ' | current' if self.is_current_display else ''
         return f'<StageDisplay: {self.name}{current}>'
