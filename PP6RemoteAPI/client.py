@@ -85,9 +85,12 @@ class PP6RemoteAPIClient:
         command = {'action': 'stageDisplaySets'}
         return self.async_send(command)
 
-    def stage_display_set_display(self, name):
+    def stage_display_set_display_by_name(self, name):
         names = self.stage_display_sets_names()
         index = names.index(name)
+        return self.stage_display_set_display(index)
+
+    def stage_display_set_display(self, index):
         command = {
             'action': 'stageDisplaySetIndex',
             'stageDisplayIndex': index,

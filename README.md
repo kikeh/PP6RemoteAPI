@@ -62,8 +62,10 @@ Clears audio from player
 Clears props on live screen
 #### _stage_display_sets()_
 Returns all available StageDisplay sets
-#### _stage_display_set_display(name)_
+#### _stage_display_set_display_by_name(name)_
 Sets as current StageDisplay the one corresponding to _name_
+#### _stage_display_set_display(index)_
+Sets as current StageDisplay the one corresponding to _index_
 #### _telestrator_settings()_
 Returns current telestrator settings (Telestrator is not implemented in the current version).
 ### Properties
