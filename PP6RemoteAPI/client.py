@@ -191,7 +191,10 @@ class PP6RemoteAPIClient:
 
     @property
     def current_presentation(self):
-        return self.get_current_presentation()
+        current = self.get_current_presentation()
+        for presentation in self.library.presentations:
+            if current['presentationPath'] == presentation.abs_name:
+                return presentation
 
     @property
     def current_audio(self):
