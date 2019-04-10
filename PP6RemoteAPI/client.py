@@ -1,6 +1,7 @@
 import asyncio
 import json
 import websockets
+import sys
 
 from .clock import Clock
 from .library import Library
@@ -38,13 +39,23 @@ class PP6RemoteAPIClient:
 
         return response
 
-    def async_send(self, command, expect_response=True):
-        return asyncio.run(
-            asyncio.wait_for(
-                self._send(command, expect_response),
-                timeout=self.DEFAULT_TIMEOUT,
+    def run(self, task):
+        if sys.version_info >= (3, 7):
+            return asyncio.run(
+                asyncio.wait_for(task, timeout=self.DEFAULT_TIMEOUT)
             )
-        )
+
+        # Emulate asyncio.run() on older versions
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            return loop.run_until_complete(task)
+        finally:
+            loop.close()
+            asyncio.set_event_loop(None)
+
+    def async_send(self, command, expect_response=True):
+        return self.run(self._send(command, expect_response))
 
     async def _send(self, command, expect_response=True):
         command = json.dumps(command)
