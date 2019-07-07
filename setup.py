@@ -35,7 +35,7 @@ setup(
     )),
     packages=find_packages(exclude=['tests*']),
     install_requires=[
-        'websockets==7.0',
+        'websockets==8.0',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
